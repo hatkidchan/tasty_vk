@@ -1,5 +1,7 @@
 venv/
 downloads/
+experimental/
+*.vks
 .env
 *.sw[op]
 *.py[cowd]
