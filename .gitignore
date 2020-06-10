@@ -1,0 +1,5 @@
+venv/
+downloads/
+.env
+*.sw[op]
+*.py[cowd]
