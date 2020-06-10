@@ -4,7 +4,7 @@ from io import open # wat da peck?
 
 
 def read(name):
-    with open(filename, 'r', encoding='utf-8') as f:
+    with open(name, 'r', encoding='utf-8') as f:
         return f.read()
     
 setup(name='tasty_vk',
