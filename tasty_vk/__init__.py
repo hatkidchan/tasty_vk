@@ -9,7 +9,11 @@ logger = logging.getLogger('tasty_vk')
 
 
 class VK(apihelper.VKBase):
-    def __init__(self, access_token=None, session_name=':memory:', ver=API_VERSION, captcha_handler=None):
+    def __init__(self, access_token=None,
+                 session_name=':memory:',
+                 group_id=None,
+                 ver=API_VERSION,
+                 captcha_handler=None):
         super().__init__(access_token, ver, captcha_handler)
         self.api = apihelper.VKMethod(self)
         self.session = VKSession(session_name)
@@ -17,7 +21,7 @@ class VK(apihelper.VKBase):
         self.access_token = self.session['_'].get('access_token') or self.access_token
         self.session['_']['access_token'] = self.access_token
         self.session.save()
-        self.longpoll = apihelper.VKLongpoll(self, None)
+        self.longpoll = apihelper.VKLongpoll(self, group_id)
     
     def upload_document(self, path, peer_id=None, raw=False):
         return apihelper.upload_document(self, path, peer_id, raw)
