@@ -107,7 +107,7 @@ for event in vk.longpoll.poll_events():
 ```
 
 Класс `RDict` упрощает доступ к свойствам ответа, причем делает это рекурсивно:
-```
+```python
 >>> friends = vk.api.friends.get(fields='online')
 >>> friends.items[0].first_name, friends.items[0].last_name
 Имя Файла
@@ -132,3 +132,5 @@ for event in vk.longpoll.poll_events():
 Отправляет сообщение пользователю. Эта функция сама заботится о `random_id`
 
 ## TODO: хуки, больше примеров, сессии и прочее..
+
+И многое другое, что я забыл сделать, да...
