@@ -112,16 +112,16 @@ def send_message(self, peer_id, message='', **kwargs):
 
 def upload_document(self, path, peer_id=None, raw=False):
     server = self.call('docs.getMessagesUploadServer', peer_id=peer_id)
-    doc = VKBase.post(server['upload_url'], files=dict(file=open(path, 'rb')))
-    document = self.call('docs.save', file=doc['file'], title=path)
+    doc = VKBase.post(server.upload_url, files=dict(file=open(path, 'rb')))
+    document = self.call('docs.save', file=doc.file, title=path)
     if 'doc' in document:
         if raw:
             return document['doc']
-        return 'doc{owner_id}_{id}'.format(**document['doc'])
+        return 'doc{owner_id}_{id}'.format(**document.doc.__dict__)
     else:
         if raw:
             return document[0]
-        return 'doc{owner_id}_{id}'.format(**document[0])
+        return 'doc{owner_id}_{id}'.format(**document[0].__dict__)
 
 
 def send_document(self, peer_id, path, **kwargs):
@@ -132,16 +132,16 @@ def send_document(self, peer_id, path, **kwargs):
 def upload_graffiti(self, path, peer_id=None, raw=False):
     server = self.call('docs.getMessagesUploadServer',
                        type='graffiti', peer_id=peer_id)
-    doc = VKBase.post(server['upload_url'], files=dict(file=open(path, 'rb')))
-    document = self.call('docs.save', file=doc['file'], title='graffiti.png')
+    doc = VKBase.post(server.upload_url, files=dict(file=open(path, 'rb')))
+    document = self.call('docs.save', file=doc.file, title='graffiti.png')
     if 'doc' in document:
         if raw:
             return document['doc']
-        return 'doc{owner_id}_{id}'.format(**document['doc'])
+        return 'doc{owner_id}_{id}'.format(**document.doc.__dict__)
     else:
         if raw:
             return document[0]
-        return 'doc{owner_id}_{id}'.format(**document[0])
+        return 'doc{owner_id}_{id}'.format(**document[0].__dict__)
 
 
 def send_graffiti(self, peer_id, path, **kwargs):
@@ -152,11 +152,11 @@ def send_graffiti(self, peer_id, path, **kwargs):
 def upload_voice(self, path, peer_id=None, raw=False):
     server = self.call('docs.getMessagesUploadServer',
                        type='audio_message', peer_id=peer_id)
-    doc = VKBase.post(server['upload_url'], files=dict(file=open(path, 'rb')))
-    document = self.call('docs.save', file=doc['file'], title=path)
+    doc = VKBase.post(server.upload_url, files=dict(file=open(path, 'rb')))
+    document = self.call('docs.save', file=doc.file, title=path)
     if raw:
         return document['audio_message']
-    return 'doc{owner_id}_{id}'.format(**document['audio_message'])
+    return 'doc{owner_id}_{id}'.format(**document.audio_message.__dict__)
 
 
 def send_voice(self, peer_id, path, **kwargs):
@@ -166,17 +166,17 @@ def send_voice(self, peer_id, path, **kwargs):
 
 def upload_photo(self, path, peer_id=None, raw=False):
     server = self.call('photos.getMessagesUploadServer', peer_id=peer_id)
-    photo_info = VKBase.post(server['upload_url'],
+    photo_info = VKBase.post(server.upload_url,
                              files=dict(photo=open(path, 'rb')))
-    photo = self.call('photos.saveMessagesPhoto', **photo_info)
+    photo = self.call('photos.saveMessagesPhoto', **photo_info.__dict__)
     if 'photo' in photo:
         if raw:
             return photo['photo']
-        return 'photo{owner_id}_{id}'.format(**photo['photo'])
+        return 'photo{owner_id}_{id}'.format(**photo.photo.__dict__)
     else:
         if raw:
             return photo[0]
-        return 'photo{owner_id}_{id}'.format(**photo[0])
+        return 'photo{owner_id}_{id}'.format(**photo[0].__dict__)
 
 
 def send_photo(self, peer_id, paths, **kwargs):

@@ -28,7 +28,7 @@ class RDict:
             ]
         else:
             return value
-        
+
     @classmethod
     def revert(cls, value):
         """
@@ -48,7 +48,7 @@ class RDict:
             ]
         else:
             return value
-        
+
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             setattr(self, k, self.convert(v))
@@ -59,7 +59,7 @@ class RDict:
 
     def __getitem__(self, item):
         return self.__dict__[item]
-    
+
     def __contains__(self, item):
         return item in self.__dict__
 
@@ -85,18 +85,18 @@ class VKSession(dict):
             }
         })
         self.name = session_name
-        
+
     @property
     def path(self):
         return os.path.abspath(os.path.join(SESSIONS_HOME, self.name + '.vks'))
-    
+
     def save(self):
         if self.name == ':memory:':
             return False
         with open(self.path, 'wb') as fd:
             pickle.dump(dict(self), fd)
         logger.debug('session saved')
-    
+
     def load(self):
         if self.name == ':memory:':
             return False
