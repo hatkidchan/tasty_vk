@@ -14,15 +14,15 @@ class VKMethod:
     def __init__(self, master, chain=None):
         self.master = master
         self.chain = chain or []
-    
+
     def __getattr__(self, method):
         return VKMethod(self.master, self.chain + [method])
-    
+
     def __call__(self, **kwargs):
         for k, v in kwargs.items():
             if isinstance(v, (list, tuple)):
                 kwargs[k] = ','.join(str(o) for o in v)
-        
+
         return self.master.call('.'.join(self.chain), **kwargs)
 
 
@@ -31,7 +31,7 @@ class VKBase:
         self.access_token = access_token
         self.version = ver
         self.captcha_handler = captcha_handler
-    
+
     def call(self, method, **params):
         raw = params.pop('_raw') if '_raw' in params else False
         use_post = params.pop('_post') if '_post' in params else False
@@ -39,16 +39,16 @@ class VKBase:
         for k, v in params.items():
             if isinstance(v, (list, tuple)):
                 params[k] = ','.join(str(o) for o in v)
-        
+
         if self.access_token is not None:
             logger.debug('%s%r', method, params)
             params['access_token'] = self.access_token
         else:
             logger.debug('anon/%s%r', method, params)
-            
+
         if 'v' not in params:
             params['v'] = self.version
-        
+
         try:
             if use_post:
                 request = post(API_URL % method, data=params)
@@ -57,43 +57,43 @@ class VKBase:
         except Exception as e:
             logger.error('exception during connection: %r', e)
             raise e
-        
+
         try:
             response = request.json()
         except ValueError as e:
             logger.error('exception during parsing: %r', e)
             raise ParseError(e, request)
-        
+
         if 'error' in response:
             error = response['error']
             message = 'Error %s: %s' % (error['error_code'], error['error_msg'])
             logger.error(message)
             raise ApiException(message, backup, response)
-    
+
         logger.debug('response = %r', response)
         return response if raw else RDict.convert(response['response'])
-    
+
     @staticmethod
     def post(url, **params):
         logger.debug('post/%s%r', params)
-        
+
         try:
             request = post(url, **params)
         except Exception as e:
             logger.error('exception during connection: %r', e)
             raise e
-        
+
         try:
             response = request.json()
         except ValueError as e:
             logger.error('exception during parsing: %r', e)
             raise ParseError(e, request)
-        
+
         if 'error' in response:
             message = 'Error: %r', response['error']
             logger.error(message)
             raise ApiException(message, params, response)
-        
+
         logger.debug('response = %r', response)
         return RDict.convert(response)
 
@@ -198,7 +198,7 @@ class VKLongpoll:
                        raw=False):
         self._polling = False
         self.master = master
-        
+
         lp_data = master.session.get('lp', {})
         self.group_id = group_id or lp_data.get('group_id')
         self.server = server or lp_data.get('server')
@@ -206,12 +206,12 @@ class VKLongpoll:
         self.key = key or lp_data.get('key')
         self.reconnect = reconnect
         self.raw = raw
-        
+
     def get_events(self):
         server_url = self.server
         if 'https' not in server_url:
             server_url = 'https://' + server_url
-        
+
         try:
             request = get(server_url, params={
                 'act': 'a_check',
@@ -229,14 +229,14 @@ class VKLongpoll:
                 return self.get_events()
             else:
                 raise e
-        
+
         try:
             data = request.json()
         except ValueError as e:
             raise ParseError(e, request)
-        
+
         return data
-    
+
     def get_longpoll_server(self):
         if self.group_id is None:
             server = self.master.call('messages.getLongPollServer',
@@ -248,7 +248,7 @@ class VKLongpoll:
         self.server = server['server']
         self.ts = server['ts']
         self.key = server['key']
-        
+
     def update_session(self):
         if 'lp' not in self.master.session:
             self.master.session['lp'] = {}
@@ -259,7 +259,7 @@ class VKLongpoll:
             'key': self.key
         })
         self.master.session.save()
-    
+
     def poll_events(self):
         if self.server is None:
             self.get_longpoll_server()

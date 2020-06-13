@@ -22,19 +22,19 @@ class VK(apihelper.VKBase):
         self.session['_']['access_token'] = self.access_token
         self.session.save()
         self.longpoll = apihelper.VKLongpoll(self, group_id)
-    
+
     def upload_document(self, path, peer_id=None, raw=False):
         return apihelper.upload_document(self, path, peer_id, raw)
-    
+
     def upload_graffiti(self, path, peer_id=None, raw=False):
         return apihelper.upload_graffiti(self, path, peer_id, raw)
-    
+
     def upload_voice(self, path, peer_id=None, raw=False):
         return apihelper.upload_voice(self, path, peer_id, raw)
-    
+
     def upload_photo(self, path, peer_id=None, raw=False):
         return apihelper.upload_photo(self, path, peer_id, raw)
-    
+
     def send_document(self, peer_id, path, **kwargs):
         return apihelper.send_document(self, peer_id, path, **kwargs)
 
@@ -46,7 +46,7 @@ class VK(apihelper.VKBase):
 
     def send_photo(self, peer_id, paths, **kwargs):
         return apihelper.send_photo(self, peer_id, paths, **kwargs)
-    
+
     def send_message(self, peer_id, message='', **kwargs):
         return apihelper.send_message(self, peer_id, message, **kwargs)
 
