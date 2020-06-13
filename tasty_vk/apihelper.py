@@ -126,7 +126,7 @@ def upload_document(self, path, peer_id=None, raw=False):
 
 def send_document(self, peer_id, path, **kwargs):
     document = self.upload_document(path, peer_id)
-    return send_message(peer_id, attachments=[document], **kwargs)
+    return send_message(self, peer_id, attachments=[document], **kwargs)
 
 
 def upload_graffiti(self, path, peer_id=None, raw=False):
@@ -146,7 +146,7 @@ def upload_graffiti(self, path, peer_id=None, raw=False):
 
 def send_graffiti(self, peer_id, path, **kwargs):
     graffiti = self.upload_graffiti(path, peer_id)
-    return send_message(peer_id, attachments=[graffiti], **kwargs)
+    return send_message(self, peer_id, attachments=[graffiti], **kwargs)
 
 
 def upload_voice(self, path, peer_id=None, raw=False):
@@ -161,7 +161,7 @@ def upload_voice(self, path, peer_id=None, raw=False):
 
 def send_voice(self, peer_id, path, **kwargs):
     voice = self.upload_voice(path, peer_id)
-    return send_message(peer_id, attachments=[voice], **kwargs)
+    return send_message(self, peer_id, attachments=[voice], **kwargs)
 
 
 def upload_photo(self, path, peer_id=None, raw=False):
@@ -185,7 +185,7 @@ def send_photo(self, peer_id, paths, **kwargs):
         paths = [paths]
     for path in paths:
         photos.append(self.upload_photo(path, peer_id))
-    return send_message(peer_id, attachments=photos, **kwargs)
+    return send_message(self, peer_id, attachments=photos, **kwargs)
 
 
 class VKLongpoll:
