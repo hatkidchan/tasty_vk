@@ -8,7 +8,7 @@ def read(name):
         return f.read()
     
 setup(name='tasty_vk',
-      version='0.0.1',
+      version='0.0.2',
       description='Python VK api',
       long_description=read('README.md'),
       long_description_content_type='text/markdown',

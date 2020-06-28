@@ -8,7 +8,7 @@ SESSIONS_HOME = os.curdir
 logger = logging.getLogger('tasty_vk')
 
 
-class RDict:
+class RDict(dict):
     @classmethod
     def convert(cls, value):
         """
@@ -38,7 +38,7 @@ class RDict:
             return {
                 k: cls.revert(v)
                 for k, v
-                in value.__dict__.items()
+                in value.items()
             }
         elif isinstance(value, (list, tuple)):
             return [
@@ -50,18 +50,11 @@ class RDict:
             return value
 
     def __init__(self, **kwargs):
+        dict.__init__(self, **kwargs)
         for k, v in kwargs.items():
+            if k in dir(dict):
+                k = '_' + k
             setattr(self, k, self.convert(v))
-        self.__dict__ = kwargs
-
-    def __repr__(self):
-        return repr(self.__dict__)
-
-    def __getitem__(self, item):
-        return self.__dict__[item]
-
-    def __contains__(self, item):
-        return item in self.__dict__
 
 
 class ApiException(ValueError):
