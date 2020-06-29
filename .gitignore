@@ -5,3 +5,6 @@ experimental/
 .env
 *.sw[op]
 *.py[cowd]
+build/
+dist/
+*.egg_info

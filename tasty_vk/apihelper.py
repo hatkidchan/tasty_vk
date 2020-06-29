@@ -34,6 +34,7 @@ class VKBase:
 
     def call(self, method, **params):
         raw = params.pop('_raw') if '_raw' in params else False
+        attempt = params.pop('_attempt') if '_attempt' in params else 0
         use_post = params.pop('_post') if '_post' in params else False
         backup = params.copy()
         for k, v in params.items():
@@ -66,12 +67,33 @@ class VKBase:
 
         if 'error' in response:
             error = response['error']
-            message = 'Error %s: %s' % (error['error_code'], error['error_msg'])
+            message = 'Error {error_code}: {error_msg}'.format(**error)
             logger.error(message)
-            raise ApiException(message, backup, response)
+            response = self.error_handler(method, params,
+                                          response, _attempt)
+            if not response:
+                raise ApiException(message, backup, response)
 
         logger.debug('response = %r', response)
         return response if raw else RDict.convert(response['response'])
+
+    def error_handler(method, params, response, attempt):
+        error = response['error']
+        code = error['error_code']
+        if attempt > 10:
+            return
+        if code in (1, 10):  # Unknown error / Internal Server error
+            time.sleep(1)
+            return self.call(method, **params, _attempt=attempt + 1)
+        elif code == 14 and callable(self.captcha_handler):
+            captcha_sid = error['captcha_sid']
+            captcha_img = error['captcha_img']
+            result = self.captcha_handler(captcha_sid, captcha_img)
+            if not result:
+                return
+            params['captcha_sid'] = captcha_sid
+            params['captcha_key'] = result
+            return self.call(method, **params, _attempt=attempt + 1)
 
     @staticmethod
     def post(url, **params):
