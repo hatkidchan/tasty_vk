@@ -7,4 +7,4 @@ experimental/
 *.py[cowd]
 build/
 dist/
-*.egg_info
+*.egg_info/

@@ -57,7 +57,10 @@ class VKBase:
                 request = get(API_URL % method, params=params)
         except Exception as e:
             logger.error('exception during connection: %r', e)
-            raise e
+            if attempt > 10:
+                raise e
+            time.sleep(1)
+            return self.call(method, **backup, _attempt=attempt+1)
 
         try:
             response = request.json()
@@ -69,7 +72,7 @@ class VKBase:
             error = response['error']
             message = 'Error {error_code}: {error_msg}'.format(**error)
             logger.error(message)
-            response = self.error_handler(method, params,
+            response = self.error_handler(method, backup,
                                           response, _attempt)
             if not response:
                 raise ApiException(message, backup, response)
