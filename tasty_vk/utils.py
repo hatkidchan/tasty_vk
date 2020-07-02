@@ -54,8 +54,14 @@ class RDict(dict):
         for k, v in kwargs.items():
             if k in dir(dict):
                 k = '_' + k
-            setattr(self, k, self.convert(v))
 
+    def __getattr__(self, key):
+        if key.endswith('_') and key[:-1] in self and key not in dir(self):
+            return self[key[:-1]]
+        if key in dir({}):
+            return dict.__getattr__(self, key)
+        if key in self:
+            return self[key]
 
 class ApiException(ValueError):
     pass
