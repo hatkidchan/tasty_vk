@@ -42,10 +42,10 @@ class VKBase:
                 params[k] = ','.join(str(o) for o in v)
 
         if self.access_token is not None:
-            logger.debug('%s%r', method, params)
+            logger.info('%s%r', method, params)
             params['access_token'] = self.access_token
         else:
-            logger.debug('anon/%s%r', method, params)
+            logger.info('anon/%s%r', method, params)
 
         if 'v' not in params:
             params['v'] = self.version
@@ -56,7 +56,7 @@ class VKBase:
             else:
                 request = get(API_URL % method, params=params)
         except Exception as e:
-            logger.error('exception during connection: %r', e)
+            logger.error('exception during connection (%d): %r', attempt, e)
             if attempt > 10:
                 raise e
             time.sleep(1)
@@ -73,7 +73,7 @@ class VKBase:
             message = 'Error {error_code}: {error_msg}'.format(**error)
             logger.error(message)
             response = self.error_handler(method, backup,
-                                          response, _attempt)
+                                          response, attempt)
             if not response:
                 raise ApiException(message, backup, response)
 
