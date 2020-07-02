@@ -80,7 +80,7 @@ class VKBase:
         logger.debug('response = %r', response)
         return response if raw else RDict.convert(response['response'])
 
-    def error_handler(method, params, response, attempt):
+    def error_handler(self, method, params, response, attempt):
         error = response['error']
         code = error['error_code']
         if attempt > 10:
